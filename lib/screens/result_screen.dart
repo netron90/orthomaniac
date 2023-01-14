@@ -1,3 +1,4 @@
+import 'package:audiofileplayer/audiofileplayer.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:orthomaniac/components/question_page_components/question.dart';
@@ -32,7 +33,6 @@ class ResultScreen extends StatefulWidget {
 }
 
 class _ResultScreenState extends State<ResultScreen> {
-
   InterstitialAd? _interstitialAd;
 
   List<bool> globalA = [];
@@ -51,7 +51,7 @@ class _ResultScreenState extends State<ResultScreen> {
     }
   }
 
-    void _loadInterstitialAd(BuildContext context) {
+  void _loadInterstitialAd(BuildContext context) {
     InterstitialAd.load(
       adUnitId: AdHelper.interstitialAdUnitId,
       request: AdRequest(),
@@ -69,24 +69,38 @@ class _ResultScreenState extends State<ResultScreen> {
         },
         onAdFailedToLoad: (err) {
           print('Failed to load an interstitial ad: ${err.message}');
-          Navigator.pop(context);
+         
         },
       ),
     );
   }
 
+  @override
+  void initState() {
+
+    Audio.load('assets/songs/level_complete.mp3')
+      ..play()
+      ..dispose();
+
+    
+  }
 
   @override
   Widget build(BuildContext context) {
-   
     globalA = widget.globalAnswer;
     questionCheck = widget.questionCheck;
     QuestionBrain q = widget.questionBrain;
     badAnswers = widget.badAnswers;
     correctAnswer();
+    _loadInterstitialAd(context);
     return WillPopScope(
       onWillPop: () {
-       _loadInterstitialAd(context);
+        if (_interstitialAd != null) {
+          _interstitialAd?.show();
+        } else {
+          Navigator.pop(context);
+        }
+       
         return Future.value(false);
       },
       child: SafeArea(
@@ -94,21 +108,18 @@ class _ResultScreenState extends State<ResultScreen> {
           backgroundColor: kWhiteColor,
           body: CustomScrollView(
             slivers: [
-             
-               SliverToBoxAdapter(
-                  
-                  child: Material(
-                    elevation: 4.0,
-                    child: Container(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 16.0, horizontal: 18.0),
-                      child: ScoreTrackerComponent(
-                        scoreData: widget.scoreData,
-                      ),
+              SliverToBoxAdapter(
+                child: Material(
+                  elevation: 4.0,
+                  child: Container(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 16.0, horizontal: 18.0),
+                    child: ScoreTrackerComponent(
+                      scoreData: widget.scoreData,
                     ),
                   ),
                 ),
-             
+              ),
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
@@ -143,8 +154,8 @@ class _ResultScreenState extends State<ResultScreen> {
                 ),
               ),
               SliverList(
-                delegate:
-                    SliverChildBuilderDelegate((BuildContext context, int index) {
+                delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Column(
@@ -165,16 +176,17 @@ class _ResultScreenState extends State<ResultScreen> {
                                     color: kAccentColorApp),
                                 children: <TextSpan>[
                                   TextSpan(
-                                      text:
-                                          widget.goodquestionCheck[index].getText1()),
+                                      text: widget.goodquestionCheck[index]
+                                          .getText1()),
                                   TextSpan(
                                     text: widget.goodquestionCheck[index]
                                         .getOrthographe(),
-                                    style: TextStyle(fontWeight: FontWeight.w700),
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w700),
                                   ),
                                   TextSpan(
-                                      text:
-                                          widget.goodquestionCheck[index].getText2())
+                                      text: widget.goodquestionCheck[index]
+                                          .getText2())
                                 ],
                               ),
                             ),
@@ -200,7 +212,8 @@ class _ResultScreenState extends State<ResultScreen> {
                                     children: <TextSpan>[
                                       TextSpan(text: 'Réponse: '),
                                       TextSpan(
-                                        text: widget.goodquestionCheck[index].getCorrectAnswer(),
+                                        text: widget.goodquestionCheck[index]
+                                            .getCorrectAnswer(),
                                         style: TextStyle(
                                             fontWeight: FontWeight.w700),
                                       ),
@@ -252,10 +265,9 @@ class _ResultScreenState extends State<ResultScreen> {
                   ),
                 ),
               ),
-              
               SliverList(
-                delegate:
-                    SliverChildBuilderDelegate((BuildContext context, int index) {
+                delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Column(
@@ -276,16 +288,17 @@ class _ResultScreenState extends State<ResultScreen> {
                                     color: kAccentColorApp),
                                 children: <TextSpan>[
                                   TextSpan(
-                                      text:
-                                          widget.badquestionCheck[index].getText1()),
+                                      text: widget.badquestionCheck[index]
+                                          .getText1()),
                                   TextSpan(
                                     text: widget.badquestionCheck[index]
                                         .getOrthographe(),
-                                    style: TextStyle(fontWeight: FontWeight.w700),
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w700),
                                   ),
                                   TextSpan(
-                                      text:
-                                          widget.badquestionCheck[index].getText2())
+                                      text: widget.badquestionCheck[index]
+                                          .getText2())
                                 ],
                               ),
                             ),
@@ -315,7 +328,8 @@ class _ResultScreenState extends State<ResultScreen> {
                                         style: TextStyle(
                                             fontWeight: FontWeight.w700),
                                       ),
-                                      TextSpan(text: '. La bonne réponse est: '),
+                                      TextSpan(
+                                          text: '. La bonne réponse est: '),
                                       TextSpan(
                                         text: widget.goodAnswers[index],
                                         style: TextStyle(
@@ -337,39 +351,50 @@ class _ResultScreenState extends State<ResultScreen> {
                 }, childCount: incorrectA.length),
               ),
               SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 8.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton(
-                            onPressed:(){
-                              _loadInterstitialAd(context);
-                             
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 28.0),
-                              child: Text(
-                              'OK',
-                                style: TextStyle(
-                        fontFamily: 'Heebo', fontWeight: FontWeight.w700, fontSize: 16.0),
-                              ),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              primary: kPrimaryColorApp,
-                            ),
+                  child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18.0, vertical: 8.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (_interstitialAd != null) {
+                            _interstitialAd?.show();
+                          } else {
+                            Navigator.pop(context);
+                          }
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 14.0, horizontal: 28.0),
+                          child: Text(
+                            'OK',
+                            style: TextStyle(
+                                fontFamily: 'Heebo',
+                                fontWeight: FontWeight.w700,
+                                fontSize: 16.0),
                           ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          primary: kPrimaryColorApp,
+                        ),
                       ),
-                    ],
-                  ),
-                )
-              ),
-              
+                    ),
+                  ],
+                ),
+              )),
             ],
           ),
         ),
       ),
     );
   }
-}
 
+  @override
+  void dispose() {
+    _interstitialAd?.dispose();
+
+    super.dispose();
+  }
+}

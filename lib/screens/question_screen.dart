@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:audiofileplayer/audiofileplayer.dart';
 import 'package:flutter/material.dart';
 import 'package:orthomaniac/components/question_page_components/button_action_component.dart';
 import 'package:orthomaniac/components/question_page_components/question.dart';
@@ -40,6 +41,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
           print('La reponse est vrai: \n COrrect Answer: ${questionBrain.questionsList[tracker].getCorrectAnswer()}');
       setState(
         () {
+          Audio.load('assets/songs/correct_answer.mp3')..play()..dispose();
           scoreData.updateScoreIconColor(tracker);
           globalAnswer.add(true);
           questionCheck.add(questionBrain.questionsList[tracker]);
@@ -59,8 +61,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
       );
     } 
     else {
-      print('La reponse est fausse');
-      print('La reponse est vrai: \n COrrect Answer: ${questionBrain.questionsList[tracker].getCorrectAnswer()}');
+      Audio.load('assets/songs/wrong_answer.mp3')..play()..dispose();
       globalAnswer.add(false);
       questionCheck.add(questionBrain.questionsList[tracker]);
       badQuestionCheck.add(questionBrain.questionsList[tracker]);
