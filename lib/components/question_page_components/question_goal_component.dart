@@ -39,7 +39,7 @@ class QuestionGoalComponent extends StatelessWidget {
                   fontSize: 16.0,
                   color: kAccentColorApp),
               children: <TextSpan>[
-                TextSpan(text: 'Corrige l\'orthographe du mot '),
+                TextSpan(text: 'Corrige l\'orthographe du mot ou de l\'expression '),
                 TextSpan(
                   text: questionBrain.questionsList[tracker]
                       .getOrthographe(),

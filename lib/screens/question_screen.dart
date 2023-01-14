@@ -46,11 +46,11 @@ class _QuestionScreenState extends State<QuestionScreen> {
           globalAnswer.add(true);
           questionCheck.add(questionBrain.questionsList[tracker]);
           goodQuestionCheck.add(questionBrain.questionsList[tracker]);
-          if (tracker >= questionBrain.questionsList.length - 1) {
+          if (tracker >= 10 - 1) {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => ResultScreen(globalAnswer: globalAnswer, questionBrain: questionBrain, questionCheck: questionCheck, goodquestionCheck: goodQuestionCheck, badquestionCheck: badQuestionCheck, goodAnswers: goodAnswerCheck,badAnswers: badAnswerCheck, scoreData: scoreData,),
+                 builder: (context) => ResultScreen(globalAnswer: globalAnswer, questionBrain: questionBrain, questionCheck: questionCheck, goodquestionCheck: goodQuestionCheck, badquestionCheck: badQuestionCheck, goodAnswers: goodAnswerCheck,badAnswers: badAnswerCheck, scoreData: scoreData,),
               ),
             );
           } 
@@ -68,7 +68,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
       badQuestionCheck.add(questionBrain.questionsList[tracker]);
       goodAnswerCheck.add(questionBrain.questionsList[tracker].getCorrectAnswer());
       badAnswerCheck.add(questionBrain.questionsList[tracker].getMultiAnswer()[randomAnswer.elementAt(buttonSelected)]);
-      if (tracker >= questionBrain.questionsList.length - 1) {
+      if (tracker >= 10 - 1) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
