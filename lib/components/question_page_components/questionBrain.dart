@@ -8,7 +8,7 @@ class QuestionBrain{
     Question('Je suis ', ' l\'étage.', 'sou', 'sous', ['sou','sù', 'çous', 'sous']),
     Question('C\'est ainsi que ', ' l\'aventure de Kanoé.', 'débuta', 'débuta', ['débutat','débutas', 'débuta', 'débutats']),
     Question('Quelqu\'un devait ', ' et rétablir la paix !.', 'l\'arrêté', 'l\'arrêter', ['l\'arrêté','l\'arrêter', 'l\'arêté', 'l\'arrêtter']),
-    Question('Tu penses à l\'équipement de tes alliés ? ', ' Les combats seront plus faciles !', 'S\'ils son fort', 'S\'ils sont forts', ['S\'ils son fort','s\'ils sont forts', 'S\'ils sont ford', 'S\'ils sons forts']),
+    Question('Tu penses à l\'équipement de tes alliés ? ', ' Les combats seront plus faciles !', 'S\'ils son fort', 'S\'ils sont forts', ['S\'ils son fort','S\'ils sont forts', 'S\'ils sont ford', 'S\'ils sons forts']),
     Question(' ', ' obtenir un jus d\'orange au comptoir pour vous restaurez', 'Vous pouvé', 'Vous pouvez', ['Vous pouvez','Vous pouver', 'Vous pouvée', 'Vous pouvai']),
     Question('Quand tu fais une bonne action, ', ' ! Il est de plus en plus motivé.', 'son esprit grandi', 'son esprit grandit', ['son esprit grandy','son esprit grandi', 'son esprit grandit', 'sont esprit grandit']),
     Question('Dans la cours, ', ' la cloche pour rassembler du monde.', 'fête sonner', 'faites sonner', ['faites sonner','fête sonner', 'faites sonné', 'faite sonner']),
