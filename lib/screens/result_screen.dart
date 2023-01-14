@@ -1,3 +1,4 @@
+import 'package:audiofileplayer/audiofileplayer.dart';
 import 'package:flutter/material.dart';
 import 'package:orthomaniac/components/question_page_components/question.dart';
 import 'package:orthomaniac/components/question_page_components/questionBrain.dart';
@@ -29,6 +30,10 @@ class ResultScreen extends StatefulWidget {
   State<ResultScreen> createState() => _ResultScreenState();
 }
 
+  @override
+  void initState() {
+    // Audio.load('assets/songs/level_complete.mp3')..play()..dispose();
+  }
 class _ResultScreenState extends State<ResultScreen> {
   List<bool> globalA = [];
   List<Question> questionCheck = [];
@@ -48,11 +53,14 @@ class _ResultScreenState extends State<ResultScreen> {
 
   @override
   Widget build(BuildContext context) {
+    
     globalA = widget.globalAnswer;
     questionCheck = widget.questionCheck;
     QuestionBrain q = widget.questionBrain;
     badAnswers = widget.badAnswers;
+    Audio.load('assets/songs/level_complete.mp3')..play()..dispose();
     correctAnswer();
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: kWhiteColor,
