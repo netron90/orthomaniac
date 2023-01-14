@@ -9,6 +9,8 @@ const kWhiteColor = Color(0xFFFFFFFF);
 const kPrimarySlightColorApp = Color(0x262DCD92);
 const kSlightAccentColor = Color(0x33452668);
 const kIncorrectAnswerStarColor = Color(0xFF241338);
+const kIncorrectAnswerColor = Color(0xFFFF0000);
+const kIncorrectAnswerSlightColor = Color(0x26FF0000);
 /* ------------ APP COLORS END ---------------------- */
 
 /*  ---------------- APP TEXT ----------------------- */

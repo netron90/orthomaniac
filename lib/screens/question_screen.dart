@@ -1,6 +1,17 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
-import 'package:orthomaniac/components/question_page_components/score_tracker.dart';
+import 'package:orthomaniac/components/question_page_components/button_action_component.dart';
+import 'package:orthomaniac/components/question_page_components/question.dart';
+import 'package:orthomaniac/components/question_page_components/questionBrain.dart';
+import 'package:orthomaniac/components/question_page_components/question_container.dart';
+import 'package:orthomaniac/components/question_page_components/question_goal_component.dart';
+import 'package:orthomaniac/components/question_page_components/score.dart';
+import 'package:orthomaniac/components/question_page_components/score_brain.dart';
+import 'package:orthomaniac/components/question_page_components/score_component.dart';
+import 'package:orthomaniac/components/question_page_components/score_tracker_component.dart';
 import 'package:orthomaniac/constants/constants.dart';
+import 'package:orthomaniac/screens/result_screen.dart';
 
 class QuestionScreen extends StatefulWidget {
   const QuestionScreen({Key? key}) : super(key: key);
@@ -10,6 +21,85 @@ class QuestionScreen extends StatefulWidget {
 }
 
 class _QuestionScreenState extends State<QuestionScreen> {
+
+  ScoreBrain scoreData = ScoreBrain();
+  QuestionBrain questionBrain = QuestionBrain();
+  int tracker = 0;
+  List<bool> globalAnswer = [];
+  List<Question> questionCheck = [];
+  List<String> badAnswerCheck = [];
+  List<String> goodAnswerCheck = [];
+  List<Question> goodQuestionCheck = [];
+  List<Question> badQuestionCheck = [];
+
+  int allQuestion = 0;
+  List<int> randomAnswer = [];
+  List<int> randomQuestion = [];
+
+  void checkAnswer(QuestionBrain questionBrain, int buttonSelected) {
+    if (questionBrain.questionsList[tracker].getMultiAnswer()[randomAnswer.elementAt(buttonSelected)] ==
+        questionBrain.questionsList[tracker].getCorrectAnswer()) {
+          print('La reponse est vrai: \n COrrect Answer: ${questionBrain.questionsList[tracker].getCorrectAnswer()}');
+      setState(
+        () {
+          scoreData.updateScoreIconColor(tracker);
+          globalAnswer.add(true);
+          questionCheck.add(questionBrain.questionsList[tracker]);
+          goodQuestionCheck.add(questionBrain.questionsList[tracker]);
+          if (tracker >= questionBrain.questionsList.length - 1) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ResultScreen(globalAnswer: globalAnswer, questionBrain: questionBrain, questionCheck: questionCheck, goodquestionCheck: goodQuestionCheck, badquestionCheck: badQuestionCheck, goodAnswers: goodAnswerCheck,badAnswers: badAnswerCheck, scoreData: scoreData,),
+              ),
+            );
+          } 
+          else {
+            tracker++;
+          }
+        },
+      );
+    } 
+    else {
+      print('La reponse est fausse');
+      print('La reponse est vrai: \n COrrect Answer: ${questionBrain.questionsList[tracker].getCorrectAnswer()}');
+      globalAnswer.add(false);
+      questionCheck.add(questionBrain.questionsList[tracker]);
+      badQuestionCheck.add(questionBrain.questionsList[tracker]);
+      goodAnswerCheck.add(questionBrain.questionsList[tracker].getCorrectAnswer());
+      badAnswerCheck.add(questionBrain.questionsList[tracker].getMultiAnswer()[randomAnswer.elementAt(buttonSelected)]);
+      if (tracker >= questionBrain.questionsList.length - 1) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ResultScreen(globalAnswer: globalAnswer, questionBrain: questionBrain, questionCheck: questionCheck, goodquestionCheck: goodQuestionCheck, badquestionCheck: badQuestionCheck, goodAnswers: goodAnswerCheck,badAnswers: badAnswerCheck, scoreData: scoreData,),
+          ),
+        );
+      } else {
+        setState(() {
+          tracker++;
+        });
+      }
+    }
+  }
+
+
+  void setRandomAnswer() {
+    for (int i = 0; i < 4; i++) {
+      randomAnswer.add(i);
+    }
+  }
+
+  @override
+  void initState() {
+    questionBrain.questionsList.shuffle();
+   
+    setRandomAnswer();
+    randomAnswer.shuffle();
+    randomAnswer.shuffle();
+    print('Random Answer: $randomAnswer');
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -23,231 +113,37 @@ class _QuestionScreenState extends State<QuestionScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: kSlightAccentColor,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(8.0),
-                    ),
-                  ),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 12.0,
-                    vertical: 10.0,
-                  ),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: kAccentColorApp,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(8.0),
-                      ),
-                    ),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Image(
-                              image: AssetImage('assets/images/logo_small.png'),
-                            ),
-                            SizedBox(
-                              width: 12.0,
-                            ),
-                            Text(
-                              'Score',
-                              style: TextStyle(
-                                  fontFamily: 'Heebo',
-                                  fontWeight: FontWeight.w200,
-                                  color: kWhiteColor,
-                                  fontSize: 18.0),
-                            ),
-                            SizedBox(
-                              width: 8.0,
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: kWhiteColor,
-                              ),
-                              child: VerticalDivider(
-                                color: Colors.white,
-                                width: 1.0,
-                                thickness: 1,
-                                indent: 20.0,
-                                endIndent: 0.0,
-                              ),
-                            )
-                          ],
-                        ),
-                        ScoreTracker(
-                          starColor: kIncorrectAnswerStarColor,
-                        )
-                      ],
-                    ),
-                  ),
+                ScoreTrackerComponent(scoreData: scoreData),
+                SizedBox(
+                  height: 12.0,
+                ),
+                Expanded(
+                  child: 
+                  QuestionContainer(questionBrain: questionBrain, tracker: tracker),
                 ),
                 SizedBox(
                   height: 12.0,
                 ),
-                Container(
-                  decoration: BoxDecoration(color: kPrimarySlightColorApp),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 25.0, vertical: 40.0),
-                  child: RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                        style: TextStyle(
-                            fontFamily: 'Heebo',
-                            fontWeight: FontWeight.w300,
-                            fontSize: 18.0,
-                            color: kAccentColorApp),
-                        children: <TextSpan>[
-                          TextSpan(
-                              text:
-                                  'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy '),
-                          TextSpan(
-                            text: 'astraunote',
-                            style: TextStyle(fontWeight: FontWeight.w700),
-                          ),
-                          TextSpan(
-                              text:
-                                  ' tempor invidunt ut labore et dolore magna aliquyam erat, sed diam')
-                        ]),
-                  ),
-                ),
-                SizedBox(
-                  height: 12.0,
-                ),
-                Column(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border(
-                          top: BorderSide(width: 2, color: kPrimaryColorApp),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                          vertical: 12.0, horizontal: 20.0),
-                      decoration: BoxDecoration(
-                        color: kPrimarySlightColorApp,
-                        border: Border.all(color: kPrimaryColorApp, width: 1.0),
-                      ),
-                      child: RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                          style: TextStyle(
-                              fontFamily: 'Heebo',
-                              fontWeight: FontWeight.w300,
-                              fontSize: 16.0,
-                              color: kAccentColorApp),
-                          children: <TextSpan>[
-                            TextSpan(text: 'Corrige l\'orthographe du mot '),
-                            TextSpan(
-                              text: 'astraunote',
-                              style: TextStyle(fontWeight: FontWeight.w700),
-                            ),
-                            TextSpan(text: ' au besoin.')
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
-                ),
+                QuestionGoalComponent(questionBrain: questionBrain, tracker: tracker),
                 SizedBox(
                   height: 12.0,
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        print('astronaute');
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 14.0, horizontal: 28.0),
-                        child: Text(
-                          'astronaute',
-                          style: TextStyle(
-                              fontFamily: 'Heebo',
-                              fontWeight: FontWeight.w700,
-                              fontSize: 16.0),
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        primary: kPrimaryColorApp,
-                      ),
-                    ),
+                    ButtonAction(onPressed: ()=> checkAnswer(questionBrain, 0), tracker: tracker, randomAnswers: randomAnswer, buttonSelected: 0, questionBrain: questionBrain,),
                     SizedBox(
                       height: 10.0,
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        print('astronaute');
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 14.0, horizontal: 28.0),
-                        child: Text(
-                          'astroneaute',
-                          style: TextStyle(
-                              fontFamily: 'Heebo',
-                              fontWeight: FontWeight.w700,
-                              fontSize: 16.0),
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        primary: kPrimaryColorApp,
-                      ),
-                    ),
+                   ButtonAction(onPressed: ()=> checkAnswer(questionBrain, 1), tracker: tracker, randomAnswers: randomAnswer, buttonSelected: 1, questionBrain: questionBrain,),
                     SizedBox(
                       height: 10.0,
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        print('astronaute');
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 14.0, horizontal: 28.0),
-                        child: Text(
-                          'astronote',
-                          style: TextStyle(
-                              fontFamily: 'Heebo',
-                              fontWeight: FontWeight.w700,
-                              fontSize: 16.0),
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        primary: kPrimaryColorApp,
-                      ),
-                    ),
+                    ButtonAction(onPressed: ()=> checkAnswer(questionBrain, 2), tracker: tracker, randomAnswers: randomAnswer, buttonSelected: 2, questionBrain: questionBrain,),
                     SizedBox(
                       height: 10.0,
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        print('astronaute');
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 14.0, horizontal: 28.0),
-                        child: Text(
-                          'astronnote',
-                          style: TextStyle(
-                              fontFamily: 'Heebo',
-                              fontWeight: FontWeight.w700,
-                              fontSize: 16.0),
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        primary: kPrimaryColorApp,
-                      ),
-                    ),
+                    ButtonAction(onPressed: ()=> checkAnswer(questionBrain, 3), tracker: tracker, randomAnswers: randomAnswer, buttonSelected: 3, questionBrain: questionBrain,),
                   ],
                 )
               ],
@@ -260,4 +156,33 @@ class _QuestionScreenState extends State<QuestionScreen> {
 }
 
 
-// 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy astraunote tempor invidunt ut labore et dolore magna aliquyam erat, sed diam'
+
+
+// class ButtonAction extends StatelessWidget {
+ 
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return ElevatedButton(
+//                       onPressed: () {
+//                         print('astronaute');
+//                         checkAnswer(questionBrain, 0);
+//                       },
+//                       child: Padding(
+//                         padding: const EdgeInsets.symmetric(
+//                             vertical: 14.0, horizontal: 28.0),
+//                         child: Text(
+//                           questionBrain.questionsList[tracker]
+//                               .getMultiAnswer()[randomAnswer.elementAt(0)],
+//                           style: TextStyle(
+//                               fontFamily: 'Heebo',
+//                               fontWeight: FontWeight.w700,
+//                               fontSize: 16.0),
+//                         ),
+//                       ),
+//                       style: ElevatedButton.styleFrom(
+//                         primary: kPrimaryColorApp,
+//                       ),
+//                     );
+//   }
+// }
