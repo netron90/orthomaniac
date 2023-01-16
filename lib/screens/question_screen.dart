@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:audiofileplayer/audiofileplayer.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:orthomaniac/components/question_page_components/button_action_component.dart';
 import 'package:orthomaniac/components/question_page_components/question.dart';
 import 'package:orthomaniac/components/question_page_components/questionBrain.dart';
@@ -11,6 +12,7 @@ import 'package:orthomaniac/components/question_page_components/score_brain.dart
 import 'package:orthomaniac/components/question_page_components/score_tracker_component.dart';
 import 'package:orthomaniac/constants/constants.dart';
 import 'package:orthomaniac/screens/result_screen.dart';
+import 'package:orthomaniac/services/ad_helper.dart';
 
 class QuestionScreen extends StatefulWidget {
   const QuestionScreen({Key? key}) : super(key: key);
@@ -21,6 +23,7 @@ class QuestionScreen extends StatefulWidget {
 
 class _QuestionScreenState extends State<QuestionScreen> {
 
+ 
   ScoreBrain scoreData = ScoreBrain();
   QuestionBrain questionBrain = QuestionBrain();
   int tracker = 0;
@@ -88,6 +91,8 @@ class _QuestionScreenState extends State<QuestionScreen> {
       randomAnswer.add(i);
     }
   }
+
+    
 
   @override
   void initState() {
